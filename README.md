@@ -1,1 +1,1 @@
-## Vanilla TS Boilerplate
+## Pacman - Vanilla TypeScript
