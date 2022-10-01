@@ -49,21 +49,26 @@ function update() {
 
     if (!dir) return;
 
-    const { left, right, top, bottom, offset } = dir;
+    const { left, right, top, bottom } = dir;
 
     if (pacman.direction === "left" && left) {
       pacman.x += BLOCK_SIZE;
-      pacman.setDirection(null);
+      pacman.dx = 0;
     }
+
     if (pacman.direction === "right" && right) {
-      pacman.setDirection(null);
+      pacman.x -= BLOCK_SIZE;
+      pacman.dx = 0;
     }
+
     if (pacman.direction === "top" && top) {
       pacman.y += BLOCK_SIZE;
-      pacman.setDirection(null);
+      pacman.dy = 0;
     }
+
     if (pacman.direction === "bottom" && bottom) {
-      pacman.setDirection(null);
+      pacman.y -= BLOCK_SIZE;
+      pacman.dy = 0;
     }
   });
 }

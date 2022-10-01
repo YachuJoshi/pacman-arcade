@@ -25,7 +25,9 @@ const direction: DirectionObject = {
 export class Pacman {
   x: number;
   y: number;
-  radius: 32;
+  dx: 0 | 32;
+  dy: 0 | 32;
+  radius: 30;
   color: string;
   movementOffset: 0 | 32;
   direction: null | Direction;
@@ -33,11 +35,12 @@ export class Pacman {
   constructor(props: PacmanProps) {
     this.x = props.x;
     this.y = props.y;
-    this.radius = BLOCK_SIZE;
+    this.radius = 30;
     this.color = props.color || "yellow";
     this.initEventListener();
     this.direction = null;
-    this.movementOffset = BLOCK_SIZE;
+    this.dx = 0;
+    this.dy = 0;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -54,50 +57,56 @@ export class Pacman {
 
   setDirection(direction: null | Direction) {
     this.direction = direction;
+
+    if (direction === "left" || direction === "right") this.dx = 32;
+    if (direction === "top" || direction === "bottom") this.dy = 32;
   }
 
   update() {
-    if (!this.direction) return;
-
     if (this.direction === "left") {
-      this.x -= this.movementOffset;
+      this.x -= this.dx;
       return;
     }
 
     if (this.direction === "right") {
-      this.x += this.movementOffset;
+      this.x += this.dx;
       return;
     }
 
     if (this.direction === "top") {
-      this.y -= this.movementOffset;
+      this.y -= this.dy;
       return;
     }
 
-    this.y += this.movementOffset;
+    this.y += this.dy;
   }
 
   initEventListener = () => {
-    window.addEventListener("keydown", (e: KeyboardEvent) => {
+    addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.code === "Space") this.setDirection(null);
       if (!possibleMoves.includes(e.key)) return;
-      if (this.direction === this.getDirection(e.key as PossibleDirectionKeys))
-        return;
 
-      this.setDirection(this.getDirection(e.key as PossibleDirectionKeys));
+      const currentDirection = this.getDirection(
+        e.key as PossibleDirectionKeys
+      );
+
+      if (this.direction === currentDirection) return;
+
+      this.setDirection(currentDirection);
     });
   };
 
   getCollisionDirection<T extends GameElement>(elem: T) {
     if (
-      this.x + this.radius >= elem.x &&
-      this.x <= elem.x + elem.width &&
-      this.y + this.radius >= elem.y &&
-      this.y <= elem.y + elem.height
+      this.x + this.radius / 2 >= elem.x &&
+      this.x - this.radius / 2 <= elem.x + elem.width &&
+      this.y + this.radius / 2 >= elem.y &&
+      this.y - this.radius / 2 <= elem.y + elem.height
     ) {
-      const topDiff = elem.y + elem.height - this.y;
-      const bottomDiff = this.y + this.radius - elem.y;
-      const leftDiff = elem.x + elem.width - this.x;
-      const rightDiff = this.x + this.radius - elem.x;
+      const topDiff = elem.y + elem.height - (this.y - this.radius / 2);
+      const bottomDiff = this.y + this.radius / 2 - elem.y;
+      const leftDiff = elem.x + elem.width - (this.x - this.radius / 2);
+      const rightDiff = this.x + this.radius / 2 - elem.x;
 
       const offset = Math.min(bottomDiff, topDiff, leftDiff, rightDiff);
 
