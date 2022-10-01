@@ -8,6 +8,7 @@ import { scoreElem } from "./elements";
 import { createAudioElement } from "./utils";
 
 import BG_AUDIO from "./audio/bg.wav";
+import WIN_AUDIO from "./audio/win.wav";
 
 import "./style.css";
 
@@ -17,6 +18,7 @@ let score = 0;
 let frames = 0;
 let staggerFrames = 5;
 let bgAudio = createAudioElement(BG_AUDIO);
+let winAudio = createAudioElement(WIN_AUDIO);
 let isPlaying: boolean = false;
 let foods: Food[] = [];
 const walls: Wall[] = [];
@@ -114,6 +116,13 @@ function update() {
 function animate() {
   frames++;
   rID = requestAnimationFrame(animate);
+
+  if (foods.length <= 0) {
+    bgAudio.pause();
+    winAudio.play();
+    cancelAnimationFrame(rID);
+    console.log("You won!");
+  }
 
   draw();
   update();
