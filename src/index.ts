@@ -1,3 +1,4 @@
+import { Food } from "./food";
 import { Wall } from "./wall";
 import { Pacman } from "./pacman";
 import { BLOCK_SIZE } from "./base";
@@ -9,8 +10,9 @@ import "./style.css";
 let rID: number;
 let pacman: Pacman;
 let frames = 0;
-let staggerFrames = 4;
+let staggerFrames = 5;
 const walls: Wall[] = [];
+const foods: Food[] = [];
 const { canvas, ctx } = initCanvas();
 
 function init() {
@@ -21,6 +23,17 @@ function init() {
 
   TILE_MAP.forEach((row, rIndex) => {
     row.forEach((col, cIndex) => {
+      // Food
+      if (col === 0) {
+        foods.push(
+          new Food({
+            x: cIndex * BLOCK_SIZE,
+            y: rIndex * BLOCK_SIZE,
+          })
+        );
+      }
+
+      // Wall
       if (col === 1) {
         walls.push(
           new Wall({
@@ -36,6 +49,7 @@ function init() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   walls.forEach((wall) => wall.draw(ctx));
+  foods.forEach((food) => food.draw(ctx));
   pacman.draw(ctx);
 }
 

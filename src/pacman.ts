@@ -1,4 +1,3 @@
-import { BLOCK_SIZE } from "./base";
 import { GameElement } from "./utils";
 
 interface DirectionObject {
@@ -27,7 +26,7 @@ export class Pacman {
   y: number;
   dx: 0 | 32;
   dy: 0 | 32;
-  radius: 30;
+  radius: 16;
   color: string;
   movementOffset: 0 | 32;
   direction: null | Direction;
@@ -35,8 +34,8 @@ export class Pacman {
   constructor(props: PacmanProps) {
     this.x = props.x;
     this.y = props.y;
-    this.radius = 30;
-    this.color = props.color || "yellow";
+    this.radius = 16;
+    this.color = props.color || "#FFFB00";
     this.initEventListener();
     this.direction = null;
     this.dx = 0;
@@ -46,7 +45,7 @@ export class Pacman {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.arc(this.x, this.y, this.radius / 2, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
   }
