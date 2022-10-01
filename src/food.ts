@@ -1,5 +1,3 @@
-import { BLOCK_SIZE } from "./base";
-
 interface FoodProps {
   x: number;
   y: number;
@@ -21,13 +19,7 @@ export class Food {
   draw(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.arc(
-      this.x + BLOCK_SIZE / 2,
-      this.y + BLOCK_SIZE / 2,
-      this.radius,
-      0,
-      Math.PI * 2
-    );
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.closePath();
   }

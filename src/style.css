@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Emulogic";
+  src: url("../fonts/Emulogic.ttf");
+}
+
 *,
 *::before,
 *::after {
@@ -12,12 +17,19 @@ body {
 }
 
 body {
+  background-color: #111111;
+  font-family: Emulogic;
+  color: #07a5ff;
   overflow-y: hidden;
-  font-family: "Poppins", sans-serif;
   height: 100vh;
   display: flex;
+  flex-flow: column;
   justify-content: center;
   align-items: center;
+}
+
+h1 {
+  margin-bottom: 8px;
 }
 
 canvas {

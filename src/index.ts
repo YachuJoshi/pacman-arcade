@@ -4,15 +4,22 @@ import { Pacman } from "./pacman";
 import { BLOCK_SIZE } from "./base";
 import { initCanvas } from "./canvas";
 import { TILE_MAP } from "./constant";
+import { scoreElem } from "./elements";
+import { createAudioElement } from "./utils";
+
+import BG_AUDIO from "./audio/bg.wav";
 
 import "./style.css";
 
 let rID: number;
 let pacman: Pacman;
+let score = 0;
 let frames = 0;
 let staggerFrames = 5;
+let bgAudio = createAudioElement(BG_AUDIO);
+let isPlaying: boolean = false;
+let foods: Food[] = [];
 const walls: Wall[] = [];
-const foods: Food[] = [];
 const { canvas, ctx } = initCanvas();
 
 function init() {
@@ -27,8 +34,8 @@ function init() {
       if (col === 0) {
         foods.push(
           new Food({
-            x: cIndex * BLOCK_SIZE,
-            y: rIndex * BLOCK_SIZE,
+            x: cIndex * BLOCK_SIZE + BLOCK_SIZE / 2,
+            y: rIndex * BLOCK_SIZE + BLOCK_SIZE / 2,
           })
         );
       }
@@ -44,6 +51,14 @@ function init() {
       }
     });
   });
+
+  addEventListener("keydown", async (_) => {
+    if (isPlaying) return;
+
+    isPlaying = true;
+    await bgAudio.play();
+    bgAudio.loop = true;
+  });
 }
 
 function draw() {
@@ -57,9 +72,10 @@ function update() {
   if (frames % staggerFrames !== 0) return;
 
   pacman.update();
+  scoreElem.textContent = `${score}`;
 
   walls.forEach((wall) => {
-    const dir = pacman.getCollisionDirection(wall);
+    const dir = pacman.getWallCollisionDirection(wall);
 
     if (!dir) return;
 
@@ -83,6 +99,14 @@ function update() {
     if (pacman.direction === "bottom" && bottom) {
       pacman.y -= BLOCK_SIZE;
       pacman.dy = 0;
+    }
+  });
+
+  foods.forEach((food, i) => {
+    // Eat Food
+    if (pacman.isCollidingWithFood(food)) {
+      score += 50;
+      foods.splice(i, 1);
     }
   });
 }
